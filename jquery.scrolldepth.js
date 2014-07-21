@@ -82,8 +82,18 @@
           dataLayer.push({'event': 'ScrollTiming', 'eventCategory': 'Scroll Depth', 'eventAction': action, 'eventLabel': label, 'eventTiming': timing});
         }
 
-      } else {
+      } else if(options.customHandler) {
+        options.customHandler({'event': 'ScrollDistance', 'eventCategory': 'Scroll Depth', 'eventAction': action, 'eventLabel': label, 'eventValue': 1, 'eventNonInteraction': options.nonInteraction});
 
+        if (options.pixelDepth && arguments.length > 2 && scrollDistance > lastPixelDepth) {
+          lastPixelDepth = scrollDistance;
+          options.customHandler({'event': 'ScrollDistance', 'eventCategory': 'Scroll Depth', 'eventAction': 'Pixel Depth', 'eventLabel': rounded(scrollDistance), 'eventValue': 1, 'eventNonInteraction': options.nonInteraction});
+        }
+
+        if (options.userTiming && arguments.length > 3) {
+          options.customHandler({'event': 'ScrollTiming', 'eventCategory': 'Scroll Depth', 'eventAction': action, 'eventLabel': label, 'eventTiming': timing});
+        }
+      } else {
         if (universalGA) {
 
           ga('send', 'event', 'Scroll Depth', action, label, 1, {'nonInteraction': options.nonInteraction ? 1 : 0});
